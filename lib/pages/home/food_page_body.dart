@@ -1,7 +1,8 @@
 import 'package:dots_indicator/dots_indicator.dart';
 import 'package:flutter/material.dart';
-import 'package:food_delivery/utils/Dimemsion.dart';
+import 'package:food_delivery/utils/dimemsion.dart';
 import 'package:food_delivery/utils/colors.dart';
+import 'package:food_delivery/widget/app_column.dart';
 import 'package:food_delivery/widget/big_text.dart';
 import 'package:food_delivery/widget/icon_and_text_widget.dart';
 import 'package:food_delivery/widget/small_text.dart';
@@ -86,39 +87,93 @@ class _FoodPageBodyState extends State<FoodPageBody> {
             ],
           ),
         ),
-        Container(
-          height: 900,
-          // color: Colors.red,
-          child: ListView.builder(
-              shrinkWrap: true,
-              physics: const NeverScrollableScrollPhysics(),
-              itemCount: 10,
-              itemBuilder: (context, index) {
-                return Container(
-                  child: Row(
-                    children: [
-                      Container(
-                        height: 120,
-                        width: 120,
-                        margin: EdgeInsets.only(
-                            left: DimemsionApp.width20,
-                            right: DimemsionApp.width20,
-                            bottom: DimemsionApp.height10),
-                        decoration: BoxDecoration(
-                            image: const DecorationImage(
-                                fit: BoxFit.cover,
-                                image: AssetImage("assets/image/food_2.jpeg")),
-                            borderRadius:
-                                BorderRadius.circular(DimemsionApp.radius20),
-                            color: index.isEven
-                                ? const Color(0xFF69c5df)
-                                : const Color(0xFF9294cc)),
+        // Container(
+        //   height: 900,
+        //   // color: Colors.red,
+        ListView.builder(
+            shrinkWrap: true,
+            physics: const NeverScrollableScrollPhysics(),
+            itemCount: 10,
+            itemBuilder: (context, index) {
+              return Container(
+                child: Row(
+                  children: [
+                    Container(
+                      height: 120,
+                      width: 120,
+                      margin: EdgeInsets.only(
+                          left: DimemsionApp.width20,
+                          // right: DimemsionApp.width20,
+                          bottom: DimemsionApp.height10),
+                      decoration: BoxDecoration(
+                          image: const DecorationImage(
+                              fit: BoxFit.cover,
+                              image: AssetImage("assets/image/food_2.jpeg")),
+                          borderRadius:
+                              BorderRadius.circular(DimemsionApp.radius20),
+                          color: index.isEven
+                              ? const Color(0xFF69c5df)
+                              : const Color(0xFF9294cc)),
+                    ),
+                    Expanded(
+                        child: Container(
+                      height: 120,
+                      // width: 180,
+                      decoration: BoxDecoration(
+                          // color: Colors.red,
+                          borderRadius: BorderRadius.only(
+                              bottomRight:
+                                  Radius.circular(DimemsionApp.radius20),
+                              topRight:
+                                  Radius.circular(DimemsionApp.radius20))),
+                      child: Padding(
+                        padding: EdgeInsets.only(
+                            left: DimemsionApp.width10,
+                            right: DimemsionApp.width10),
+                        child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          // mainAxisAlignment: MainAxisAlignment.center,
+                          children: [
+                            BigText(text: 'Viet Nam Local food'),
+                            SizedBox(
+                              height: DimemsionApp.height10,
+                            ),
+                            SmallText(text: 'with characterist in viet nam '),
+                            SizedBox(
+                              height: DimemsionApp.height10,
+                            ),
+                            Row(
+                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                              children: const [
+                                IconAndTextWidget(
+                                  icon: Icons.circle_sharp,
+                                  text: 'Normal',
+                                  iColor: AppColors.iconColor1,
+                                  // color: AppColors.textColor
+                                ),
+                                IconAndTextWidget(
+                                  icon: Icons.location_on,
+                                  text: '1.7km',
+                                  iColor: AppColors.mainColor,
+                                  // color: AppColors.textColor
+                                ),
+                                IconAndTextWidget(
+                                  icon: Icons.access_time_rounded,
+                                  text: '32 min',
+                                  iColor: AppColors.iconColor2,
+                                  // color: AppColors.textColor
+                                )
+                              ],
+                            )
+                          ],
+                        ),
                       ),
-                    ],
-                  ),
-                );
-              }),
-        )
+                    ))
+                    // Text container
+                  ],
+                ),
+              );
+            }),
       ],
     );
   }
@@ -192,65 +247,11 @@ class _FoodPageBodyState extends State<FoodPageBody> {
                   borderRadius: BorderRadius.circular(DimemsionApp.radius20),
                   color: Colors.white),
               child: Container(
-                padding: EdgeInsets.only(
-                    top: DimemsionApp.height15, left: 15, right: 15),
-                child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      BigText(text: 'Viet Nam local food'),
-                      SizedBox(
-                        height: DimemsionApp.height10,
-                      ),
-                      Row(
-                        children: [
-                          Wrap(
-                            children: List.generate(
-                                5,
-                                (index) => const Icon(
-                                      Icons.star,
-                                      color: AppColors.mainColor,
-                                      size: 15,
-                                    )),
-                          ),
-                          const SizedBox(
-                            width: 10,
-                          ),
-                          SmallText(text: '4.5'),
-                          const SizedBox(
-                            width: 10,
-                          ),
-                          SmallText(text: '200 comments')
-                        ],
-                      ),
-                      SizedBox(
-                        height: DimemsionApp.height20,
-                      ),
-                      Row(
-                        crossAxisAlignment: CrossAxisAlignment.center,
-                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                        children: const [
-                          IconAndTextWidget(
-                            icon: Icons.circle_sharp,
-                            text: 'Normal',
-                            iColor: AppColors.iconColor1,
-                            // color: AppColors.textColor
-                          ),
-                          IconAndTextWidget(
-                            icon: Icons.location_on,
-                            text: '1.7km',
-                            iColor: AppColors.mainColor,
-                            // color: AppColors.textColor
-                          ),
-                          IconAndTextWidget(
-                            icon: Icons.access_time_rounded,
-                            text: '32 min',
-                            iColor: AppColors.iconColor2,
-                            // color: AppColors.textColor
-                          )
-                        ],
-                      )
-                    ]),
-              ),
+                  padding: EdgeInsets.only(
+                      top: DimemsionApp.height15, left: 15, right: 15),
+                  child: AppColumn(
+                    text: 'Cao lau',
+                  )),
             ),
           )
         ],

@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:food_delivery/utils/Dimemsion.dart';
+import 'package:food_delivery/utils/dimemsion.dart';
 import 'package:food_delivery/utils/colors.dart';
 
 // ignore: must_be_immutable

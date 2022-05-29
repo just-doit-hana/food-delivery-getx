@@ -7,8 +7,8 @@ class SmallText extends StatelessWidget {
       {Key? key,
       this.color = AppColors.textColor,
       required this.text,
-      this.size = 12,
-      this.height = 1.2})
+      this.size = 14,
+      this.height = 1.4})
       : super(key: key);
   Color? color;
   final String text;
