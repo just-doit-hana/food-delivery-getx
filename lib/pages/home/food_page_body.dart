@@ -1,11 +1,18 @@
 import 'package:dots_indicator/dots_indicator.dart';
 import 'package:flutter/material.dart';
+import 'package:food_delivery/controller/popular_product_controller.dart';
+import 'package:food_delivery/model/product_model.dart';
+import 'package:food_delivery/pages/food/popular_food_detail.dart';
+import 'package:food_delivery/utils/app_constant.dart';
 import 'package:food_delivery/utils/dimemsion.dart';
 import 'package:food_delivery/utils/colors.dart';
 import 'package:food_delivery/widget/app_column.dart';
 import 'package:food_delivery/widget/big_text.dart';
 import 'package:food_delivery/widget/icon_and_text_widget.dart';
 import 'package:food_delivery/widget/small_text.dart';
+import 'package:get/get.dart';
+
+import '../../controller/recomemded_product_controller.dart';
 
 class FoodPageBody extends StatefulWidget {
   const FoodPageBody({Key? key}) : super(key: key);
@@ -40,27 +47,43 @@ class _FoodPageBodyState extends State<FoodPageBody> {
   Widget build(BuildContext context) {
     return Column(
       children: [
-        Container(
-          // color: Colors.redAccent,
-          height: DimemsionApp.pageView,
-          child: PageView.builder(
-              controller: pageController,
-              itemCount: 5,
-              itemBuilder: (context, index) {
-                return _buildPageItem(index);
-              }),
-        ),
-        DotsIndicator(
-          dotsCount: 5,
-          position: _currentPageValue,
-          decorator: DotsDecorator(
-            activeColor: AppColors.mainColor,
-            size: const Size.square(9.0),
-            activeSize: const Size(18.0, 9.0),
-            activeShape: RoundedRectangleBorder(
-                borderRadius: BorderRadius.circular(5.0)),
-          ),
-        ),
+        GetBuilder<PopularProductController>(builder: (popularProducts) {
+          return popularProducts.isLoaded
+              ? SizedBox(
+                  // color: Colors.redAccent,
+                  height: DimemsionApp.pageView,
+                  child: GestureDetector(
+                    onTap: () {
+                      Get.to(PopularFoodDetail());
+                    },
+                    child: PageView.builder(
+                        controller: pageController,
+                        itemCount: popularProducts.popularProductList.length,
+                        itemBuilder: (context, index) {
+                          return _buildPageItem(
+                              index, popularProducts.popularProductList[index]);
+                        }),
+                  ))
+              : const CircularProgressIndicator(
+                  color: AppColors.mainColor,
+                );
+        }),
+
+        GetBuilder<PopularProductController>(builder: (popularProducts) {
+          return DotsIndicator(
+            dotsCount: popularProducts.popularProductList.isEmpty
+                ? 1
+                : popularProducts.popularProductList.length,
+            position: _currentPageValue,
+            decorator: DotsDecorator(
+              activeColor: AppColors.mainColor,
+              size: const Size.square(9.0),
+              activeSize: const Size(18.0, 9.0),
+              activeShape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(5.0)),
+            ),
+          );
+        }),
         SizedBox(
           height: DimemsionApp.height30,
         ),
@@ -69,7 +92,7 @@ class _FoodPageBodyState extends State<FoodPageBody> {
           child: Row(
             crossAxisAlignment: CrossAxisAlignment.end,
             children: [
-              BigText(text: 'Popular'),
+              BigText(text: 'Recommendation'),
               SizedBox(
                 width: DimemsionApp.width10,
               ),
@@ -90,95 +113,106 @@ class _FoodPageBodyState extends State<FoodPageBody> {
         // Container(
         //   height: 900,
         //   // color: Colors.red,
-        ListView.builder(
-            shrinkWrap: true,
-            physics: const NeverScrollableScrollPhysics(),
-            itemCount: 10,
-            itemBuilder: (context, index) {
-              return Container(
-                child: Row(
-                  children: [
-                    Container(
-                      height: 120,
-                      width: 120,
-                      margin: EdgeInsets.only(
-                          left: DimemsionApp.width20,
-                          // right: DimemsionApp.width20,
-                          bottom: DimemsionApp.height10),
-                      decoration: BoxDecoration(
-                          image: const DecorationImage(
-                              fit: BoxFit.cover,
-                              image: AssetImage("assets/image/food_2.jpeg")),
-                          borderRadius:
-                              BorderRadius.circular(DimemsionApp.radius20),
-                          color: index.isEven
-                              ? const Color(0xFF69c5df)
-                              : const Color(0xFF9294cc)),
-                    ),
-                    Expanded(
-                        child: Container(
-                      height: 120,
-                      // width: 180,
-                      decoration: BoxDecoration(
-                          // color: Colors.red,
-                          borderRadius: BorderRadius.only(
-                              bottomRight:
-                                  Radius.circular(DimemsionApp.radius20),
-                              topRight:
-                                  Radius.circular(DimemsionApp.radius20))),
-                      child: Padding(
-                        padding: EdgeInsets.only(
-                            left: DimemsionApp.width10,
-                            right: DimemsionApp.width10),
-                        child: Column(
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          // mainAxisAlignment: MainAxisAlignment.center,
-                          children: [
-                            BigText(text: 'Viet Nam Local food'),
-                            SizedBox(
-                              height: DimemsionApp.height10,
+        GetBuilder<RecomemdedProductController>(builder: (recommend) {
+          return recommend.isLoaded
+              ? ListView.builder(
+                  shrinkWrap: true,
+                  physics: const NeverScrollableScrollPhysics(),
+                  itemCount: recommend.recommemedProductList.length,
+                  itemBuilder: (context, index) {
+                    return Container(
+                      child: Row(
+                        children: [
+                          Container(
+                            height: 120,
+                            width: 120,
+                            margin: EdgeInsets.only(
+                                left: DimemsionApp.width20,
+                                // right: DimemsionApp.width20,
+                                bottom: DimemsionApp.height10),
+                            decoration: BoxDecoration(
+                                image: DecorationImage(
+                                    fit: BoxFit.cover,
+                                    image: NetworkImage(
+                                        "${AppConstant.BASE_URL}${AppConstant.UPLOAD_URL}/${recommend.recommemedProductList[index].img!}")),
+                                borderRadius: BorderRadius.circular(
+                                    DimemsionApp.radius20),
+                                color: index.isEven
+                                    ? const Color(0xFF69c5df)
+                                    : const Color(0xFF9294cc)),
+                          ),
+                          Expanded(
+                              child: Container(
+                            height: 120,
+                            // width: 180,
+                            decoration: BoxDecoration(
+                                // color: Colors.red,
+                                borderRadius: BorderRadius.only(
+                                    bottomRight:
+                                        Radius.circular(DimemsionApp.radius20),
+                                    topRight: Radius.circular(
+                                        DimemsionApp.radius20))),
+                            child: Padding(
+                              padding: EdgeInsets.only(
+                                  left: DimemsionApp.width10,
+                                  right: DimemsionApp.width10),
+                              child: Column(
+                                crossAxisAlignment: CrossAxisAlignment.start,
+                                // mainAxisAlignment: MainAxisAlignment.center,
+                                children: [
+                                  BigText(
+                                      text: recommend
+                                          .recommemedProductList[index].name!),
+                                  SizedBox(
+                                    height: DimemsionApp.height10,
+                                  ),
+                                  SmallText(
+                                      text: 'with characterist in viet nam '),
+                                  SizedBox(
+                                    height: DimemsionApp.height10,
+                                  ),
+                                  Row(
+                                    mainAxisAlignment:
+                                        MainAxisAlignment.spaceBetween,
+                                    children: const [
+                                      IconAndTextWidget(
+                                        icon: Icons.circle_sharp,
+                                        text: 'Normal',
+                                        iColor: AppColors.iconColor1,
+                                        // color: AppColors.textColor
+                                      ),
+                                      IconAndTextWidget(
+                                        icon: Icons.location_on,
+                                        text: '1.7km',
+                                        iColor: AppColors.mainColor,
+                                        // color: AppColors.textColor
+                                      ),
+                                      IconAndTextWidget(
+                                        icon: Icons.access_time_rounded,
+                                        text: '32 min',
+                                        iColor: AppColors.iconColor2,
+                                        // color: AppColors.textColor
+                                      )
+                                    ],
+                                  )
+                                ],
+                              ),
                             ),
-                            SmallText(text: 'with characterist in viet nam '),
-                            SizedBox(
-                              height: DimemsionApp.height10,
-                            ),
-                            Row(
-                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                              children: const [
-                                IconAndTextWidget(
-                                  icon: Icons.circle_sharp,
-                                  text: 'Normal',
-                                  iColor: AppColors.iconColor1,
-                                  // color: AppColors.textColor
-                                ),
-                                IconAndTextWidget(
-                                  icon: Icons.location_on,
-                                  text: '1.7km',
-                                  iColor: AppColors.mainColor,
-                                  // color: AppColors.textColor
-                                ),
-                                IconAndTextWidget(
-                                  icon: Icons.access_time_rounded,
-                                  text: '32 min',
-                                  iColor: AppColors.iconColor2,
-                                  // color: AppColors.textColor
-                                )
-                              ],
-                            )
-                          ],
-                        ),
+                          ))
+                          // Text container
+                        ],
                       ),
-                    ))
-                    // Text container
-                  ],
-                ),
-              );
-            }),
+                    );
+                  })
+              : const CircularProgressIndicator(
+                  color: AppColors.mainColor,
+                );
+        }),
       ],
     );
   }
 
-  Widget _buildPageItem(int index) {
+  Widget _buildPageItem(int index, ProductModel productModel) {
     Matrix4 matrix4 = Matrix4.identity();
     if (index == _currentPageValue.floor()) {
       var currScale = 1 - (_currentPageValue - index) * (1 - _scaleFactor);
@@ -212,9 +246,10 @@ class _FoodPageBodyState extends State<FoodPageBody> {
                 right: DimemsionApp.width10,
                 bottom: DimemsionApp.height10),
             decoration: BoxDecoration(
-                image: const DecorationImage(
+                image: DecorationImage(
                     fit: BoxFit.cover,
-                    image: AssetImage("assets/image/food_2.jpeg")),
+                    image: NetworkImage(
+                        "${AppConstant.BASE_URL}${AppConstant.UPLOAD_URL}/${productModel.img!}")),
                 borderRadius: BorderRadius.circular(DimemsionApp.radius30),
                 color: index.isEven
                     ? const Color(0xFF69c5df)
@@ -250,7 +285,7 @@ class _FoodPageBodyState extends State<FoodPageBody> {
                   padding: EdgeInsets.only(
                       top: DimemsionApp.height15, left: 15, right: 15),
                   child: AppColumn(
-                    text: 'Cao lau',
+                    text: productModel.name!,
                   )),
             ),
           )
