@@ -22,7 +22,7 @@ class RecomemdedProductController extends GetxController {
       update();
       // print(_recommemedList);
     } else {
-      printError(info: 'NOt get recommendation');
+      printError(info: 'Not get recommened');
     }
   }
 }

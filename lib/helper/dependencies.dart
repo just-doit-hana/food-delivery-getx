@@ -1,6 +1,8 @@
+import 'package:food_delivery/controller/cart_controller.dart';
 import 'package:food_delivery/controller/popular_product_controller.dart';
 import 'package:food_delivery/controller/recomemded_product_controller.dart';
 import 'package:food_delivery/data/api/api_client.dart';
+import 'package:food_delivery/data/repository/cart_repo.dart';
 import 'package:food_delivery/data/repository/popular_product_repo.dart';
 import 'package:food_delivery/data/repository/recomemeded_product_repo.dart';
 import 'package:food_delivery/utils/app_constant.dart';
@@ -13,8 +15,11 @@ Future<void> init() async {
   // getRepo
   Get.lazyPut(() => PopularProductRepo(apiClient: Get.find()));
   Get.lazyPut(() => RecommendedProductRepo(apiClient: Get.find()));
+  Get.lazyPut(() => CartRepo(apiClient: Get.find()));
+
   // getController
   Get.lazyPut(() => PopularProductController(popularProductRepo: Get.find()));
   Get.lazyPut(
       () => RecomemdedProductController(recommendedProductRepo: Get.find()));
+  Get.lazyPut(() => CartController(cartRepo: Get.find()));
 }
